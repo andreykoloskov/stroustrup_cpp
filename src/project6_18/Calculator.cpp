@@ -6,184 +6,252 @@
 
 enum Token_value
 {
-   NAME,        NUMBER,       END,
-   PLUS='+',    MINUS='-',    MUL='*',   DIV='/',
-   PRINT=';',   ASSIGN='=',   LP='(',    RP=')'
+    NAME,        FUNCTION,     NUMBER,       END,
+    PLUS='+',    MINUS='-',    MUL='*',   DIV='/',
+    PRINT=';',   ASSIGN='=',   LP='(',    RP=')'
 };
 
-double expr(bool);
-double term(bool);
-double prim(bool);
-Token_value get_token();
-double error(const std::string& s);
+double expr(std::istream *, bool);
+double term(std::istream *, bool);
+double prim(std::istream *, bool);
+Token_value get_token(std::istream *);
+double error(const std::string& s, int line);
 std::istream *input;
 
 Token_value curr_tok = PRINT;
 double number_value;
 std::string string_value;
 std::map<std::string, double> table;
+std::map<std::string, std::string> functions;
 int no_of_errors;
 
-double term(bool get)
+double term(std::istream *input, bool get)
 {
-   double left = prim(get);
+    double left = prim(input, get);
 
-   for (;;) {
-      switch(curr_tok) {
-         case MUL:
-            left *= prim(true);
-            break;
-         case DIV:
-            if (double d = prim(true)) {
-               left /= d;
-               break;
+    for (;;) {
+        switch(curr_tok) {
+            case MUL:
+                left *= prim(input, true);
+                break;
+            case DIV:
+                if (double d = prim(input, true)) {
+                    left /= d;
+                    break;
+                }
+                return error("divide by 0", __LINE__);
+            default:
+                return left;
+        }
+    }
+}
+
+double prim(std::istream *input, bool get)
+{
+    if (get) {
+        get_token(input);
+    }
+
+    switch (curr_tok) {
+        case NUMBER:
+        {
+            double v = number_value;
+            get_token(input);
+            return v;
+        }
+        case NAME:
+        {
+            double& v = table[string_value];
+            if (get_token(input) == ASSIGN) {
+                v = expr(input, true);
             }
-            return error("divide by 0");
-         default:
-            return left;
-      }
-   }
-}
+            return v;
+        }
+        case FUNCTION:
+        {
+            if (functions.find(string_value) != functions.end()) {
+                std::istringstream in(functions[string_value]);
 
-double prim(bool get)
-{
-   if (get) {
-      get_token();
-   }
+                Token_value curr_tok_in = curr_tok;
+                double number_value_in = number_value;
+                std::string string_value_in = string_value;
+                std::map<std::string, double> table_in = table;
 
-   switch (curr_tok) {
-      case NUMBER:
-      {
-         double v = number_value;
-         get_token();
-         return v;
-      }
-      case NAME:
-      {
-         double& v = table[string_value];
-         if (get_token() == ASSIGN) {
-            v = expr(true);
-         }
-         return v;
-      }
-      case MINUS:
-         return -prim(true);
-      case LP:
-      {
-         double e = expr(true);
-         if (curr_tok != RP) {
-            return error("')' expected");
-         }
-         get_token();
-         return e;
-      }
-      default:
-         return error("primary expected");
-   }
-   
-}
+                curr_tok = PRINT;
+                number_value = 0;
+                string_value.clear();
+                table.clear();
 
-double expr(bool get)
-{
-   double left = term(get);
+                double res = 0;
 
-   for (;;) {
-      switch(curr_tok) {
-         case PLUS:
-            left += term(true);
-            break;
-         case MINUS:
-            left -= term(true);
-            break;
-         default:
-            return left;
-      }
-   }
-}
+                while (true) {
+                    char c;
+                    if (!(in >> c)) {
+                        break;
+                    }
+                    else {
+                        in.putback(c);
+                    }
 
-Token_value get_token()
-{
-   char ch = 0;
-   //std::cin >> ch;
+                    get_token(&in);
+                    if (curr_tok == END) {
+                        break;
+                    }
+                    if (curr_tok == PRINT) {
+                        continue;
+                    }
+                    res = expr(&in, false);
+                }
 
-   do {
-      if (!std::cin.get(ch)) {
-         return curr_tok = END;
-      }
-   } while (ch != '\n' && isspace(ch));
+                curr_tok = curr_tok_in;
+                number_value = number_value_in;
+                string_value = string_value_in;
+                table = table_in;
 
-   switch (ch) {
-      case ';':
-      case '\n':
-         return  curr_tok = PRINT;
-      case 0:
-         return curr_tok = END;
-      case '*':
-      case '/':
-      case '+':
-      case '-':
-      case '(':
-      case ')':
-      case '=':
-         return curr_tok = Token_value(ch);
-      case '0': case '1': case '2': case '3': case '4':
-      case '5': case '6': case '7': case '8': case '9':
-      case '.':
-         std::cin.putback(ch);
-         std::cin >> number_value;
-         return curr_tok = NUMBER;
-      default:
-         if (isalpha(ch)) {
-            string_value = ch;
-            while (std::cin.get(ch) && isalnum(ch)) {
-               string_value.push_back(ch);
+                get_token(input);
+
+                return res;
             }
-            std::cin.putback((ch));
-            return curr_tok = NAME;
-         }
-         error("bad token");
-         return curr_tok = PRINT;
-   }
+            else {
+                return error("function is not found", __LINE__);
+            }
+        }
+        case MINUS:
+            return -prim(input, true);
+        case LP:
+        {
+            double e = expr(input, true);
+            if (curr_tok != RP) {
+                return error("')' expected", __LINE__);
+            }
+            get_token(input);
+            return e;
+        }
+        default:
+            return error("primary expected", __LINE__);
+    }
 }
 
-double error (const std::string &s)
+double expr(std::istream *input, bool get)
 {
-   no_of_errors++;
-   std::cerr << "error: " << s << '\n';
-   return 1;
+    double left = term(input, get);
+
+    for (;;) {
+        switch(curr_tok) {
+            case PLUS:
+                left += term(input, true);
+                break;
+            case MINUS:
+                left -= term(input, true);
+                break;
+            default:
+                return left;
+        }
+    }
+}
+
+Token_value get_token(std::istream *input)
+{
+    char ch = 0;
+
+    do {
+        if (!input->get(ch)) {
+            return curr_tok = END;
+        }
+    } while (ch != '\n' && isspace(ch));
+
+    switch (ch) {
+        case ';': case '\n':
+            return  curr_tok = PRINT;
+        case 0:
+            return curr_tok = END;
+        case '*': case '/': case '+': case '-':
+        case '(': case ')': case '=':
+            return curr_tok = Token_value(ch);
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+        case '.':
+            input->putback(ch);
+            *input >> number_value;
+            return curr_tok = NUMBER;
+        default:
+            if (isalpha(ch)) {
+                string_value = ch;
+                while (input->get(ch) && isalnum(ch)) {
+                    string_value.push_back(ch);
+                }
+                if (ch == '{') {
+                    std::string functionBody;
+                    while (input->get(ch) && ch != '}') {
+                        functionBody.push_back(ch);
+                    }
+
+                    if (ch != '}') {
+                        error("wrong function definition", __LINE__);
+                        return curr_tok = PRINT;
+                    }
+
+                    functions[string_value] = functionBody;
+                    string_value.clear();
+                    return get_token(input);
+                }
+                else if (ch == '(') {
+                    input->get(ch);
+                    if (ch == ')') {
+                        return curr_tok = FUNCTION;
+                    }
+                    else {
+                        error("wrong function call", __LINE__);
+                        return curr_tok = PRINT;
+                    }
+                }
+
+                input->putback(ch);
+                return curr_tok = NAME;
+            }
+            error("bad token", __LINE__);
+            return curr_tok = PRINT;
+    }
+}
+
+double error(const std::string &s, int line)
+{
+    no_of_errors++;
+    std::cerr << "error: " << s << " in line " << line << '\n';
+    return 1;
 }
 
 int main(int argc, char *argv[])
 {
-   switch(argc) {
-      case 1:
-         input = &std::cin;
-         break;
-      case 2:
-         input = new std::istringstream(argv[1]);
-         break;
-      default:
-         error("too many arguments");
-         return 1;
-   }
+    switch(argc) {
+        case 1:
+            input = &std::cin;
+            break;
+        case 2:
+            input = new std::istringstream(argv[1]);
+            break;
+        default:
+            error("too many arguments", __LINE__);
+            return 1;
+    }
 
-   table["pi"] = 3.14;
-   table["e"] = 2.71;
+    table["pi"] = 3.14;
+    table["e"] = 2.71;
 
-   while (*input) {
-      get_token();
-      if (curr_tok == END) {
-         break;
-      }
-      if (curr_tok == PRINT) {
-         continue;
-      }
-      std::cout << expr(false) << '\n';
-   }
+    while (*input) {
+        get_token(input);
+        if (curr_tok == END) {
+            break;
+        }
+        if (curr_tok == PRINT) {
+            continue;
+        }
+        std::cout << expr(input, false) << '\n';
+    }
 
-   if (input != &std::cin) {
-      delete input;
-   }
+    if (input != &std::cin) {
+        delete input;
+    }
 
-   return no_of_errors;
+    return no_of_errors;
 }
