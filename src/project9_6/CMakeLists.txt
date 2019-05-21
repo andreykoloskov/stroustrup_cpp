@@ -1,9 +1,13 @@
-﻿file(GLOB INC_LOCAL *.h *.hpp)
-
-add_library (calculator STATIC "Calculator.cpp" "Lexer.cpp" "Parser.cpp" "Error.cpp" ${INC_LOCAL})
-
-add_executable (project9_6 "main.cpp" "Calculator.h")
-
+﻿project(project9_6)
+add_subdirectory ("calculator")
+add_executable (project9_6 "main.cpp")
+#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 target_link_libraries(project9_6 calculator)
-
 install(TARGETS project9_6 DESTINATION bin)
+
+add_executable (project9_6D "main.cpp")
+#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+target_link_libraries(project9_6D calculator)
+install(TARGETS project9_6D DESTINATION bin)
