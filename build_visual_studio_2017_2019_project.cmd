@@ -17,4 +17,5 @@ cmake -G "Visual Studio 15 2017" ^
 	-A x64 ^
 	../
 
-cmake --build . -- -m:12
+cmake --build . --config Release -- -m:12
+cmake --build . --config Debug -- -m:12
