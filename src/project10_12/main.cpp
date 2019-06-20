@@ -5,7 +5,8 @@ using namespace Queue;
 int
 main(int argc, char **argv)
 {
-	CharQueue charQueue;
-	
-	return 0;
+    CharQueue charQueue;
+    charQueue.push_back('a');
+
+    return 0;
 }
