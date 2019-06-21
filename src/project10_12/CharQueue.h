@@ -6,9 +6,11 @@ namespace Queue
 class CharQueue
 {
 public:
-    CharQueue();
-    ~CharQueue();
-    void push_back(char ch);
+    CharQueue() {};
+    virtual ~CharQueue() {};
+    virtual void push_back(char ch) = 0;
+    virtual void pop_back() = 0;
+    virtual void print() = 0;
 };
 
 }
