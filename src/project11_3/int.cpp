@@ -15,6 +15,6 @@ private:
 int main(int argc, char **argv)
 {
 	Int x = 2 + 3;
-	std::cout << (int) x << std::endl;
+	std::cout << x << std::endl;
     return 0;
 }
