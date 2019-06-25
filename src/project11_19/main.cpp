@@ -5,17 +5,29 @@
 template<class T>
 void f(T a)
 {
-   T v[200];
-   PtrT(&v[0], v, 200);
+    T v[200];
 
-   //p--;
-   //*p = a;
-   p++;
-   *p = a;
+    PtrT p(&v[0], v, 200);
+
+    p--;
+    //*p = a;
+
+    p++;
+    *p = a;
+
+    p++;
+    *p = a + 1;
+
+    std::cout << v[0] << " " << v[1] << std::endl;
 }
 
 int main(int argc, char **argv)
 {
-   f(5);
-	return 0;
+    try {
+        f(5);
+    }
+    catch (const char *e) {
+        std::cout << e << std::endl;
+    }
+    return 0;
 }
