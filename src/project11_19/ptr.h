@@ -58,6 +58,16 @@ public:
         }
     }
 
+    T *operator->()
+    {
+        if (p - array < size && p - array >= 0) {
+            return p;
+        }
+        else {
+            throw("Error");
+        }
+    }
+
 private:
    T *p;
    T* array;

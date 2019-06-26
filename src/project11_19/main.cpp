@@ -11,12 +11,14 @@ void f(T a)
 
     p--;
     //*p = a;
+    //int *t = p.operator->();
 
     p++;
     *p = a;
 
     p++;
     *p = a + 1;
+    int *q = p.operator->();
 
     std::cout << v[0] << " " << v[1] << std::endl;
 }
