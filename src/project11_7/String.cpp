@@ -55,7 +55,7 @@ String::~String()
     if (--rep->n == 0) delete rep;
 }
 
-String& String::operator=(const STring& x)
+String& String::operator=(const String& x)
 {
     x.rep->n++;
     if (--rep->n == 0) delete rep;
@@ -78,3 +78,70 @@ String& String::operator=(const char *s)
     }
     return *this;
 }
+
+void String::check(int i) const
+{
+    if (i < 0 || rep->sz <= i) throw Range();
+}
+
+char String::read(int i) const
+{
+    return rep->s[i];
+}
+
+void String::write(int i, char c)
+{
+    rep = rep->get_own_copy();
+    rep->s[i] = c;
+}
+
+String::Cref String::operator[](int i)
+{
+    check(i);
+    return Cref(*this, i);
+}
+
+char String::operator[](int i) const
+{
+    check(i);
+    return rep->s[i];
+}
+
+int String::size() const
+{
+    return rep->sz;
+}
+
+std::ostream& operator<<(std::ostream& os, const String& s)
+{
+    return os << s.rep->s;
+}
+
+std::istream& operator>>(std::istream& is, String& s)
+{
+    char ss[256];
+    is >> ss;
+    s = ss;
+    return is;
+}
+
+bool operator==(const String& x, const String& y)
+{
+    return strcmp(x.rep->s, y.rep->s) == 0;
+}
+
+bool operator==(const String& x, const char* s)
+{
+    return strcmp(x.rep->s, s) == 0;
+}
+
+bool operator!=(const String& x, const String& y)
+{
+    return strcmp(x.rep->s, y.rep->s) != 0;
+}
+
+bool operator!=(const String& x, const char* s)
+{
+    return strcmp(x.rep->s, s) != 0;
+}
+
