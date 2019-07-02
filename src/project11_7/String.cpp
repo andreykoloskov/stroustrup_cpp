@@ -1,6 +1,6 @@
-#include <string.h>
+//#define __STDC_WANT_SECURE_LIB__ 1
 #include "String.h"
-
+#include <string.h>
 
 struct String::Srep
 {
@@ -13,7 +13,7 @@ struct String::Srep
         n = 1;
         sz = nsz;
         s = new char[sz + 1];
-        strcpy(s, p);
+        strcpy_s(s, sz, p);
     }
 
     ~Srep() { delete[] s; }
@@ -32,7 +32,7 @@ struct String::Srep
             sz = nsz;
             s = new char[sz + 1];
         }
-        strcpy(s, p);
+        strcpy_s(s, sz, p);
     }
 private:
     Srep(const Srep&);
@@ -65,16 +65,16 @@ String& String::operator=(const String& x)
 
 String::String(const char *s)
 {
-    rep = new Srep(strlen(s), s);
+    rep = new Srep((int) strlen(s), s);
 }
 
 String& String::operator=(const char *s)
 {
     if (rep->n == 1)
-        rep->assign(strlen(s), s);
+        rep->assign((int) strlen(s), s);
     else {
         rep->n--;
-        rep = new Srep(strlen(s), s);
+        rep = new Srep((int) strlen(s), s);
     }
     return *this;
 }
