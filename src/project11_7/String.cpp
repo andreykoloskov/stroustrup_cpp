@@ -13,7 +13,8 @@ struct String::Srep
         n = 1;
         sz = nsz;
         s = new char[sz + 1];
-        strcpy_s(s, sz, p);
+        //strcpy_s(s, sz, p);
+        strcpy(s, p);
     }
 
     ~Srep() { delete[] s; }
@@ -32,7 +33,8 @@ struct String::Srep
             sz = nsz;
             s = new char[sz + 1];
         }
-        strcpy_s(s, sz, p);
+        //strcpy_s(s, sz, p);
+        strcpy(s, p);
     }
 private:
     Srep(const Srep&);
