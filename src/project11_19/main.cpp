@@ -7,7 +7,7 @@ void f(T a)
 {
     T v[200];
 
-    PtrT p(&v[0], v, 200);
+    PtrT<int> p(&v[0], v, 200);
 
     p--;
     //*p = a;

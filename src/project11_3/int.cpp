@@ -4,7 +4,6 @@ class Int
 {
 public:
     Int(int x = 0): a(x) {}
-	Int(Int& x) { a = x.a; }
 	operator int() { return a; }
 	Int operator+(Int x) { Int i(a + x.a); return i; }
 

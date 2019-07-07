@@ -1,2 +1,4 @@
 /build_vs
 /build_linux
+/.idea
+/cmake-build-debug

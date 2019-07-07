@@ -15,7 +15,7 @@ struct String::Srep
         int len = static_cast<int>(strlen(p));
         len = (len < sz) ? len : sz;
         if (len > 0) {
-            std::memcpy(s, p, len);
+            memcpy(s, p, len);
             s[len] = '\0';
         }
     }
@@ -39,7 +39,7 @@ struct String::Srep
         int len = static_cast<int>(strlen(p));
         len = (len < sz) ? len : sz;
         if (len > 0) {
-            std::memcpy(s, p, len);
+            memcpy(s, p, len);
             s[len] = '\0';
         }
     }
