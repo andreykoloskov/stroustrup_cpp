@@ -5,10 +5,13 @@ cd "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\B
 call vcvars64.bat
 cd %~dp0
 
-if not exist build_vs (
-    echo "CREATE build_vs directory"
-    md build_vs
+if exist build_vs (
+    echo "DELETE build_vs directory"
+    rd /s /q build_vs
 )
+
+echo "CREATE build_vs directory"
+md build_vs
 
 cd build_vs
 

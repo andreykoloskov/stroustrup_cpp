@@ -1,4 +1,3 @@
-//#define __STDC_WANT_SECURE_LIB__ 1
 #include "String.h"
 #include <string.h>
 
@@ -13,8 +12,12 @@ struct String::Srep
         n = 1;
         sz = nsz;
         s = new char[sz + 1];
-        //strcpy_s(s, sz, p);
-        strcpy(s, p);
+        int len = static_cast<int>(strlen(p));
+        len = (len < sz) ? len : sz;
+        if (len > 0) {
+            std::memcpy(s, p, len);
+            s[len] = '\0';
+        }
     }
 
     ~Srep() { delete[] s; }
@@ -33,8 +36,12 @@ struct String::Srep
             sz = nsz;
             s = new char[sz + 1];
         }
-        //strcpy_s(s, sz, p);
-        strcpy(s, p);
+        int len = static_cast<int>(strlen(p));
+        len = (len < sz) ? len : sz;
+        if (len > 0) {
+            std::memcpy(s, p, len);
+            s[len] = '\0';
+        }
     }
 private:
     Srep(const Srep&);
