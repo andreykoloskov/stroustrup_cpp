@@ -59,3 +59,19 @@ private:
     Cref();
 };
 
+class String_iter
+{
+public:
+   String_iter(String& s): s(s), i(0) {}
+   char& next()
+   {
+      ch = s[++i];
+      return ch;
+   }
+
+private:
+   String& s;
+   char ch;
+   int i;
+};
+
