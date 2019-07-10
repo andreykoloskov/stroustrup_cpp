@@ -24,5 +24,8 @@ int main(int argc, char **argv)
     if (x == z) std::cout << "write failed!\n";
     std::cout << "exit: " << x << ' ' << y << ' ' << z << '\n';
 
+    for (auto it = x.begin(); it != x.end(); ++it)
+       std::cout << *it;
+
     return 0;
 }

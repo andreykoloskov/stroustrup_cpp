@@ -121,6 +121,19 @@ int String::size() const
     return rep->sz;
 }
 
+String_iter String::begin()
+{
+    String_iter it(*this);
+    return it;
+}
+
+String_iter String::end()
+{
+    String_iter it(*this);
+    it.setPosition(rep->sz);
+    return it;
+}
+
 std::ostream& operator<<(std::ostream& os, const String& s)
 {
     return os << s.rep->s;
@@ -152,5 +165,15 @@ bool operator!=(const String& x, const String& y)
 bool operator!=(const String& x, const char* s)
 {
     return strcmp(x.rep->s, s) != 0;
+}
+
+bool operator==(const String_iter& x, const String_iter& y)
+{
+   return x.getPosition() == y.getPosition();
+}
+
+bool operator!=(const String_iter& x, const String_iter& y)
+{
+   return x.getPosition() != y.getPosition();
 }
 

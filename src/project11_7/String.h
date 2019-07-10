@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+class String_iter;
+
 class String
 {
 private:
@@ -37,6 +39,10 @@ public:
     friend bool operator==(const String& x, const char* s);
     friend bool operator!=(const String& x, const String& y);
     friend bool operator!=(const String& x, const char* s);
+
+    friend class String_iter;
+    String_iter begin();
+    String_iter end();
 };
 
 String operator+(const String&, const String&);
@@ -62,12 +68,37 @@ private:
 class String_iter
 {
 public:
-   String_iter(String& s): s(s), i(0) {}
-   char& next()
-   {
-      ch = s[++i];
-      return ch;
-   }
+    String_iter(String& s): s(s), i(0) {}
+
+    char& next()
+    {
+        ch = s[++i];
+        return ch;
+    }
+
+    char operator*()
+    {
+       return s[i];
+    }
+
+    String_iter& operator++()
+    {
+       ++i;
+       return *this;
+    }
+
+    String_iter& operator++(int a)
+    {
+       String_iter si(*this);
+       ++(*this);
+       return si;
+    }
+
+    void setPosition(int ii) { i = ii; }
+    int getPosition() const { return i; }
+
+    friend bool operator==(const String_iter& x, const String_iter& y);
+    friend bool operator!=(const String_iter& x, const String_iter& y);
 
 private:
    String& s;
