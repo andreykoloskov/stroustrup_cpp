@@ -98,6 +98,11 @@ char String::read(int i) const
     return rep->s[i];
 }
 
+char& String::read2(int i)
+{
+    return rep->s[i];
+}
+
 void String::write(int i, char c)
 {
     rep = rep->get_own_copy();
@@ -169,11 +174,11 @@ bool operator!=(const String& x, const char* s)
 
 bool operator==(const String_iter& x, const String_iter& y)
 {
-   return x.getPosition() == y.getPosition();
+   return x.s == y.s && x.getPosition() == y.getPosition();
 }
 
 bool operator!=(const String_iter& x, const String_iter& y)
 {
-   return x.getPosition() != y.getPosition();
+   return !(x == y);
 }
 

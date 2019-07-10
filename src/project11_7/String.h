@@ -22,6 +22,7 @@ public:
 
     void check(int i) const;
     char read(int i) const;
+    char& read2(int i);
     void write(int i, char c);
 
     Cref operator[](int i);
@@ -52,6 +53,7 @@ class String::Cref
 {
 public:
     operator char() const { s.check(i); return s.read(i); }
+    operator char&() { s.check(i); return s.read2(i); }
     void operator=(char c) { s.write(i, c); }
 
 private:
@@ -69,40 +71,17 @@ class String_iter
 {
 public:
     String_iter(String& s): s(s), i(0) {}
-
-    char& next()
-    {
-        ch = s[++i];
-        return ch;
-    }
-
-    char operator*()
-    {
-       return s[i];
-    }
-
-    String_iter& operator++()
-    {
-       ++i;
-       return *this;
-    }
-
-    String_iter& operator++(int a)
-    {
-       String_iter si(*this);
-       ++(*this);
-       return si;
-    }
-
+    char& next() { return s[++i]; }
+    //const char operator*() { return s[i]; }
+    char& operator*() { return s[i]; }
+    String_iter& operator++() { ++i; return *this; }
+    String_iter operator++(int a) { String_iter si(*this); ++(*this); return si; }
     void setPosition(int ii) { i = ii; }
     int getPosition() const { return i; }
-
     friend bool operator==(const String_iter& x, const String_iter& y);
     friend bool operator!=(const String_iter& x, const String_iter& y);
-
 private:
    String& s;
-   char ch;
    int i;
 };
 

@@ -26,6 +26,17 @@ int main(int argc, char **argv)
 
     for (auto it = x.begin(); it != x.end(); ++it)
        std::cout << *it;
+    std::cout << std::endl;
+
+    for (auto it = x.begin(); it != x.end(); it++)
+       std::cout << *it;
+    std::cout << std::endl;
+
+    auto it = x.begin();
+    ++it;
+    *it = 'a';
+
+    std::cout << x << std::endl;
 
     return 0;
 }
