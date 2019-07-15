@@ -3,6 +3,7 @@
 #include <iostream>
 
 class String_iter;
+class SubString;
 
 class String
 {
@@ -45,7 +46,7 @@ public:
     String_iter begin();
     String_iter end();
 
-    String operator() (int pos, int count) const;
+    SubString operator() (int pos, int count) const;
 };
 
 String operator+(const String&, const String&);
@@ -85,5 +86,35 @@ public:
 private:
    String& s;
    int i;
+};
+
+
+class SubString
+{
+public:
+   SubString(String& str, String& subStr, int pos, int count): str(str), subStr(subStr), pos(pos), count(count) {}
+   operator String&() { return subStr; }
+
+   void operator=(String& s)
+   {
+      for (int i = pos; i < pos + count; ++i) {
+         char ch = s[i - pos];
+         str[i] = ch;
+      }
+   }
+   
+   void operator=(const char* s)
+   {
+      for (int i = pos; i < pos + count; ++i) {
+         char ch = s[i - pos];
+         str[i] = ch;
+      }
+   }
+   
+private:
+   String& str;
+   String subStr;
+   int pos;
+   int count;
 };
 

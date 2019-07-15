@@ -42,5 +42,10 @@ int main(int argc, char **argv)
     String t = p(2, 3);
     std::cout << p << " : " << t << std::endl;
 
+    String p2 = "Hello world!";
+    std::cout << p2 << std::endl;
+    p2(2, 3) = "aka";
+    std::cout << p2 << std::endl;
+
     return 0;
 }
