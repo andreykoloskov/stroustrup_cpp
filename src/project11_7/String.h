@@ -44,6 +44,8 @@ public:
     friend class String_iter;
     String_iter begin();
     String_iter end();
+
+    String operator() (int pos, int count) const;
 };
 
 String operator+(const String&, const String&);

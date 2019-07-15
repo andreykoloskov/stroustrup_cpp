@@ -38,5 +38,9 @@ int main(int argc, char **argv)
 
     std::cout << x << std::endl;
 
+    String p = "Hello world!";
+    String t = p(2, 3);
+    std::cout << p << " : " << t << std::endl;
+
     return 0;
 }

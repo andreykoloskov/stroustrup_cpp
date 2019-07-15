@@ -139,6 +139,17 @@ String_iter String::end()
     return it;
 }
 
+String String::operator() (int pos, int count) const
+{
+   check(pos);
+   check(count);
+   check(pos + count);
+   char* str = new char[count + 1];
+   memcpy(str, &rep->s[pos], count);
+   str[count] = '\0';
+   return String(str);
+}
+
 std::ostream& operator<<(std::ostream& os, const String& s)
 {
     return os << s.rep->s;
