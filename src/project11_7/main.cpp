@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 
     String p2 = "Hello world!";
     std::cout << p2 << std::endl;
-    p2(2, 3) = "aka";
+    p2(2, 3) = "akaka";
     std::cout << p2 << std::endl;
 
     return 0;

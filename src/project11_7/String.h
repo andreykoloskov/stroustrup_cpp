@@ -92,29 +92,15 @@ private:
 class SubString
 {
 public:
-   SubString(String& str, String& subStr, int pos, int count): str(str), subStr(subStr), pos(pos), count(count) {}
-   operator String&() { return subStr; }
-
-   void operator=(String& s)
-   {
-      for (int i = pos; i < pos + count; ++i) {
-         char ch = s[i - pos];
-         str[i] = ch;
-      }
-   }
-   
-   void operator=(const char* s)
-   {
-      for (int i = pos; i < pos + count; ++i) {
-         char ch = s[i - pos];
-         str[i] = ch;
-      }
-   }
+    SubString(String& str, String& subStr, int pos, int count): str(str), subStr(subStr), pos(pos), count(count) {}
+    operator String&() { return subStr; }
+    void operator=(String& s);
+    void operator=(const char* s);
    
 private:
-   String& str;
-   String subStr;
-   int pos;
-   int count;
+    String& str;
+    String subStr;
+    int pos;
+    int count;
 };
 

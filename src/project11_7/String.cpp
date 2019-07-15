@@ -141,15 +141,50 @@ String_iter String::end()
 
 SubString String::operator() (int pos, int count) const
 {
-   check(pos);
-   check(count);
-   check(pos + count);
-   char* str = new char[count + 1];
-   memcpy(str, &rep->s[pos], count);
-   str[count] = '\0';
-   String s = str;
-   delete[] str;
-   return SubString((String&) *this, s, pos, count);
+    check(pos);
+    check(count);
+    check(pos + count);
+    char* str = new char[count + 1];
+
+    if (count > 0)
+        memcpy(str, &rep->s[pos], count);
+
+    str[count] = '\0';
+    String s = str;
+    delete[] str;
+    return SubString((String&) *this, s, pos, count);
+}
+
+void SubString::operator=(String& s)
+{
+    int len = pos + s.size() + str.size() - pos - count + 1;
+    char* st = new char[len];
+    for (int i = 0; i < pos; ++i)
+        st[i] = str[i];
+    for (int i = pos; i < pos + s.size(); ++i)
+        st[i] = s[i - pos];
+    for (int i = pos + s.size(); i < len - 1; ++i)
+        st[i] = str[i + count - s.size()];
+    st[len - 1] = '\0';
+
+    str = st;
+    delete[] st;
+}
+
+void SubString::operator=(const char* s)
+{
+    int len = pos + strlen(s) + str.size() - pos - count + 1;
+    char* st = new char[len];
+    for (int i = 0; i < pos; ++i)
+        st[i] = str[i];
+    for (int i = pos; i < pos + strlen(s); ++i)
+        st[i] = s[i - pos];
+    for (int i = pos + strlen(s); i < len - 1; ++i)
+        st[i] = str[i + count - strlen(s)];
+    st[len - 1] = '\0';
+
+    str = st;
+    delete[] st;
 }
 
 std::ostream& operator<<(std::ostream& os, const String& s)
